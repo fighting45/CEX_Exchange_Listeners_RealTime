@@ -124,7 +124,7 @@ class MEXCListener {
         this.connectionTime = Date.now();
         console.log("🔌 WebSocket connected at", new Date().toISOString());
         this.startKeepalive();
-        this.startHeartbeat();
+        // this.startHeartbeat();
         resolve();
       });
 
@@ -132,7 +132,6 @@ class MEXCListener {
         try {
           const message = JSON.parse(data);
           console.log("📨 Received:", message);
-          await this.saveToDatabase(message);
         } catch (error) {
           console.error("❌ Error processing message:", error);
         }
@@ -153,7 +152,7 @@ class MEXCListener {
           }`
         );
         this.stopKeepalive();
-        this.stopHeartbeat();
+        // this.stopHeartbeat();
         // Auto-reconnect after 5 seconds
         setTimeout(() => this.reconnect(), 5000);
       });
@@ -184,30 +183,30 @@ class MEXCListener {
     }
   }
 
-  // Start heartbeat (client-side ping)
-  startHeartbeat() {
-    // Send ping every 20 seconds to keep connection alive
-    this.heartbeatTimer = setInterval(() => {
-      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        console.log("💓 Sending heartbeat ping");
-        this.ws.ping();
-      }
-    }, 20000); // 20 seconds
-  }
+  // // Start heartbeat (client-side ping)
+  // startHeartbeat() {
+  //   // Send ping every 20 seconds to keep connection alive
+  //   this.heartbeatTimer = setInterval(() => {
+  //     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+  //       console.log("💓 Sending heartbeat ping");
+  //       this.ws.ping();
+  //     }
+  //   }, 20000); // 20 seconds
+  // }
 
-  // Stop heartbeat timer
-  stopHeartbeat() {
-    if (this.heartbeatTimer) {
-      clearInterval(this.heartbeatTimer);
-      this.heartbeatTimer = null;
-    }
-  }
+  // // Stop heartbeat timer
+  // stopHeartbeat() {
+  //   if (this.heartbeatTimer) {
+  //     clearInterval(this.heartbeatTimer);
+  //     this.heartbeatTimer = null;
+  //   }
+  // }
 
   // Reconnect
   async reconnect() {
     console.log("🔄 Reconnecting...");
     this.stopKeepalive();
-    this.stopHeartbeat();
+    // this.stopHeartbeat();
 
     if (this.ws) {
       this.ws.terminate();
@@ -237,7 +236,7 @@ class MEXCListener {
   async stop() {
     console.log("🛑 Stopping MEXC Listener...");
     this.stopKeepalive();
-    this.stopHeartbeat();
+    // this.stopHeartbeat();
 
     if (this.ws) {
       this.ws.close();
